@@ -37,10 +37,9 @@ RUN mkdir -p /usr/local/lib/python3.7/site-packages/gfpgan/weights
 RUN wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth \
     -O /usr/local/lib/python3.7/site-packages/gfpgan/weights/GFPGANv1.3.pth
 
-# Download StyleGAN2-256 checkpoint
+# Download StyleGAN2-256 checkpoint using gdown
 RUN mkdir -p checkpoints
-RUN wget --no-check-certificate 'https://drive.google.com/uc?export=download&id=1pDzeVD6vqpcZIKzSvrPUELwN95I28Ou2' \
-    -O checkpoints/StyleGAN2-256.pkl
+RUN gdown "1pDzeVD6vqpcZIKzSvrPUELwN95I28Ou2" -O checkpoints/StyleGAN2-256.pkl
 
 # Verify the download was successful
 RUN ls -la checkpoints/ && [ -f checkpoints/StyleGAN2-256.pkl ] && echo "Download successful" || echo "Download failed"

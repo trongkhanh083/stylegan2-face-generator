@@ -25,3 +25,4 @@ python-dotenv
 aiofiles
 httpx
 jinja2
+gdown
