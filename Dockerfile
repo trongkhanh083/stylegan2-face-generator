@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Initialize and update submodules
-RUN git submodule update --init --recursive
+RUN git clone https://github.com/NVlabs/stylegan2-ada-pytorch.git
 
 # Install PyTorch with CUDA 11.0
 RUN pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 -f https://download.pytorch.org/whl/torch_stable.html
