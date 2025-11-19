@@ -4,5 +4,6 @@ gfpgan
 results
 Real-ESRGAN
 stylegan2-ada-pytorch
+services/weights
 .vscode
 .dockerignore
