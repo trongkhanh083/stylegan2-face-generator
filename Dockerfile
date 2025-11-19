@@ -22,6 +22,9 @@ RUN apt-get update && apt-get install -y \
     libxrender-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Initialize and update submodules
+RUN git submodule update --init --recursive
+
 # Install PyTorch with CUDA 11.0
 RUN pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 -f https://download.pytorch.org/whl/torch_stable.html
 
@@ -31,8 +34,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Download GFPGAN weights during build
 RUN mkdir -p /usr/local/lib/python3.7/site-packages/gfpgan/weights
-RUN wget -O /usr/local/lib/python3.7/site-packages/gfpgan/weights/GFPGANv1.3.pth \
-    https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
+RUN wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth \
+    -O /usr/local/lib/python3.7/site-packages/gfpgan/weights/GFPGANv1.3.pth
+
+# Download StyleGAN2-256 checkpoint
+RUN mkdir -p checkpoints
+RUN wget --no-check-certificate 'https://drive.google.com/uc?export=download&id=1pDzeVD6vqpcZIKzSvrPUELwN95I28Ou2' \
+    -O checkpoints/StyleGAN2-256.pkl
+
+# Verify the download was successful
+RUN ls -la checkpoints/ && [ -f checkpoints/StyleGAN2-256.pkl ] && echo "Download successful" || echo "Download failed"
 
 # Copy project
 COPY . .
