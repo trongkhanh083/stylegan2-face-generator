@@ -1,0 +1,164 @@
+<!-- app/templates/index.html -->
+{% extends "base.html" %}
+
+{% block title %}FaceGen AI{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="px-4 py-6 sm:px-0">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">AI Face Generator</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Generate photorealistic human faces using our advanced StyleGAN2 model.
+            </p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 px-4 sm:px-0">
+        <!-- Controls Panel -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Generation Settings</h2>
+                
+                <form id="generateForm">
+                    <!-- Seed Input -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-seedling mr-2 text-green-500"></i>
+                            Random Seed
+                        </label>
+                        <input type="number" id="seedInput" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="Leave empty for random">
+                        <p class="text-xs text-gray-500 mt-1">Optional: Use specific seed for reproducible results</p>
+                    </div>
+
+                    <!-- Truncation Slider -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-sliders-h mr-2 text-blue-500"></i>
+                            Creativity: <span id="truncationValue">0.5</span>
+                        </label>
+                        <input type="range" id="truncationSlider" min="0" max="1" step="0.1" value="0.5"
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>Conservative</span>
+                            <span>Creative</span>
+                        </div>
+                    </div>
+
+                    <!-- Enhancement Toggle -->
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center text-sm font-medium text-gray-700">
+                                <i class="fas fa-magic mr-2 text-purple-500"></i>
+                                Face Enhancement
+                            </label>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="enhanceToggle" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">For enhanced facial details and upscaling</p>
+                    </div>
+
+                    <!-- Generate Button -->
+                    <button type="submit" id="generateBtn"
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 flex items-center justify-center">
+                        <i class="fas fa-bolt mr-2"></i>
+                        Generate Face
+                    </button>
+
+                    <!-- Download Button (Hidden initially) -->
+                    <button type="button" id="downloadBtn" 
+                            class="w-full bg-green-600 text-white font-medium py-3 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 hidden mt-3 transition-all duration-200 flex items-center justify-center">
+                        <i class="fas fa-download mr-2"></i>
+                        Download Image
+                    </button>
+                </form>
+
+                <!-- Stats -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <h3 class="text-sm font-medium text-gray-700 mb-3">Model Information</h3>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="bg-gray-50 rounded p-2">
+                            <div class="text-gray-500">Resolution</div>
+                            <div class="font-medium">1024x1024</div>
+                        </div>
+                        <div class="bg-gray-50 rounded p-2">
+                            <div class="text-gray-500">FID Score</div>
+                            <div class="font-medium text-green-600">4.2</div>
+                        </div>
+                        <div class="bg-gray-50 rounded p-2">
+                            <div class="text-gray-500">Training Data</div>
+                            <div class="font-medium">70K+ Images</div>
+                        </div>
+                        <div class="bg-gray-50 rounded p-2">
+                            <div class="text-gray-500">Enhancement</div>
+                            <div class="font-medium">Real-ESRGAN</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Generated Face</h2>
+                
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden">
+                    <div class="flex flex-col items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                        <p class="text-gray-600">Generating face with AI...</p>
+                        <p class="text-sm text-gray-500 mt-2">This usually takes a few seconds</p>
+                    </div>
+                </div>
+
+                <!-- Results State -->
+                <div id="resultsState" class="hidden">
+                    <!-- Generated Image -->
+                    <div class="bg-gray-100 rounded-lg p-4 mb-4">
+                        <img id="generatedImage" src="" alt="Generated Face" 
+                             class="w-full h-auto rounded-lg shadow-sm mx-auto max-w-md">
+                    </div>
+
+                    <!-- Image Info -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div class="text-center p-3 bg-blue-50 rounded-lg">
+                            <div class="text-blue-600 font-semibold" id="infoSeed">-</div>
+                            <div class="text-blue-500 text-xs">Seed</div>
+                        </div>
+                        <div class="text-center p-3 bg-green-50 rounded-lg">
+                            <div class="text-green-600 font-semibold" id="infoTruncation">-</div>
+                            <div class="text-green-500 text-xs">Truncation</div>
+                        </div>
+                        <div class="text-center p-3 bg-purple-50 rounded-lg">
+                            <div class="text-purple-600 font-semibold" id="infoEnhancement">-</div>
+                            <div class="text-purple-500 text-xs">Enhancement</div>
+                        </div>
+                        <div class="text-center p-3 bg-orange-50 rounded-lg">
+                            <div class="text-orange-600 font-semibold" id="infoTime">-</div>
+                            <div class="text-orange-500 text-xs">Generated</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState">
+                    <div class="text-center py-12">
+                        <i class="fas fa-robot text-6xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No Face Generated Yet</h3>
+                        <p class="text-gray-500 max-w-md mx-auto">
+                            Click the "Generate Face" button to create your first AI-generated face. 
+                            Adjust the settings to control the creativity.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

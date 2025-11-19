@@ -1,0 +1,76 @@
+<!-- app/templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Face Generator - StyleGAN2{% endblock %}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link href="/static/css/style.css" rel="stylesheet">
+
+    <link type="image/png" sizes="16x16" rel="icon" href="/static/favicon.png">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-robot text-2xl text-blue-600 mr-3"></i>
+                        <span class="text-xl font-bold text-gray-900">FaceGen AI</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="/api/v1/generate" class="{% if request.url.path == '/api/v1/generate' %}border-blue-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium hover:text-gray-700 hover:border-gray-300">
+                            Single Face
+                        </a>
+                        <a href="/api/v1/generate/grid" class="{% if request.url.path == '/api/v1/generate/grid' %}border-blue-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium hover:text-gray-700 hover:border-gray-300">
+                            Style Mixing Face
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
+                        <i class="fas fa-circle text-green-500 mr-1"></i>
+                        Model Ready
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    Powered by StyleGAN2
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-gray-500">
+                        <i class="fab fa-github text-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/static/js/main.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
