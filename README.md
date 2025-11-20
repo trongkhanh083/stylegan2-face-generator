@@ -8,7 +8,6 @@
 A production-ready web application for generating and enhancing AI-generated faces using StyleGAN2 and Real-ESRGAN. Features a modern web interface and RESTful API for seamless integration.
 
 ![Face Generator Demo](static/demo.png)
-![Style Mixing Demo](static/generated/f2a49818.png)
 
 ## ✨ Features
 
