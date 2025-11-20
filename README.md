@@ -65,7 +65,7 @@ gdown "1pDzeVD6vqpcZIKzSvrPUELwN95I28Ou2" -O checkpoints/StyleGAN2-256.pkl
 python main.py
 ```
 
-## Docker Deployment
+## 🐳 Docker Deployment
 
 **Build Docker image**
 ```
