@@ -22,7 +22,7 @@ A production-ready web application for generating and enhancing AI-generated fac
 
 ## 🚀 Quick Start
 ```
-  docker run -p 8000:8000 trongkhanh083/face-generator
+docker run -p 8000:8000 trongkhanh083/face-generator
 ```
 
 ## 🔧 Installation
@@ -32,32 +32,55 @@ A production-ready web application for generating and enhancing AI-generated fac
 - PyTorch 1.7.1+
 - GPU (optional but recommended for faster inference)
 
+**Create environment**
+```
+conda create -n stylegan2 python=3.7
+conda activate stylegan2
+```
+
 **Clone the repository**
 ```
-   git clone --recurse-submodules https://github.com/trongkhanh083/stylegan2-face-generator.git
-   cd stylegan2-face-generator
+git clone --recurse-submodules https://github.com/trongkhanh083/stylegan2-face-generator.git
+cd stylegan2-face-generator
+```
+
+**Install pytorch**
+```
+pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 **Install dependencies**
 ```
-  pip install -r requirements.txt
+pip install -r requirements.txt
 ```
+
+**Download checkpoint**
+```
+mkdir -p checkpoints
+gdown "1pDzeVD6vqpcZIKzSvrPUELwN95I28Ou2" -O checkpoints/StyleGAN2-256.pkl
+```
+
+**Run app**
+```
+python main.py
+```
+
+## Docker Deployment
 
 **Build Docker image**
 ```
-  docker build -t face-generator .
+docker build -t face-generator .
 ```
 
 **Run the container**
 ```
-  docker run -p 8000:8000 face-generator
+docker run -p 8000:8000 face-generator
 ```
 
 **Access the Web UI**
 ```
-  http://127.0.0.1:8000/api/v1/generate
+http://127.0.0.1:8000/api/v1/generate
 ```
-
 
 ## 📄 License
 
